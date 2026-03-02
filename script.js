@@ -36,7 +36,7 @@ function changeMonth(delta) {
     if (currentViewMonth < 0) { currentViewMonth = 11; currentViewYear--; }
     else if (currentViewMonth > 11) { currentViewMonth = 0; currentViewYear++; }
     
-    // Lock from going before January 2026
+    // Prevent going before January 2026
     if (currentViewYear < 2026) {
         currentViewYear = 2026;
         currentViewMonth = 0;
@@ -68,4 +68,91 @@ function setSleep() {
     let qual = parseFloat(document.getElementById('sleepQuality').value) || 1.0;
     if (!history[selectedDate]) history[selectedDate] = { caffeine: 0, sleep: 0, score: 100, quality: 1.0, strain: 0 };
     history[selectedDate].sleep = hrs;
-    history[selectedDate
+    history[selectedDate].quality = qual;
+    document.getElementById('sleepInput').value = "";
+    updateDailyScore(selectedDate);
+    saveAndRender();
+}
+
+function setExercise() {
+    let strain = parseFloat(document.getElementById('exerciseSelect').value) || 0;
+    if (!history[selectedDate]) history[selectedDate] = { caffeine: 0, sleep: 0, score: 100, quality: 1.0, strain: 0 };
+    history[selectedDate].strain = strain;
+    updateDailyScore(selectedDate);
+    saveAndRender();
+}
+
+function updateDailyScore(date) {
+    let day = history[date];
+    let score = 100;
+    if (day.caffeine > 200) score -= (day.caffeine - 200) * 0.2;
+    const effectiveSleep = day.sleep * (day.quality || 1.0);
+    if (effectiveSleep < 7) score -= (7 - effectiveSleep) * 10;
+    score -= (day.strain || 0);
+    day.score = Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function renderCalendar() {
+    const grid = document.getElementById('calendarGrid');
+    if (!grid) return;
+    grid.innerHTML = "";
+    
+    const monthDisplay = new Date(currentViewYear, currentViewMonth);
+    document.getElementById('currentMonthHeader').textContent = monthDisplay.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(currentViewYear, currentViewMonth, 1).getDay();
+    const daysInMonth = new Date(currentViewYear, currentViewMonth + 1, 0).getDate();
+
+    // Fill empty slots for previous month's trailing days
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'calendar-day empty';
+        grid.appendChild(empty);
+    }
+
+    // Render current month days
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = `${currentViewYear}-${(currentViewMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const dayData = history[dateStr];
+        const dayCard = document.createElement('div');
+        dayCard.className = 'calendar-day';
+        
+        if (dateStr === selectedDate) dayCard.classList.add('selected');
+        if (dateStr > todayKey) dayCard.classList.add('future');
+
+        dayCard.onclick = () => selectDate(dateStr);
+
+        if (dayData && (dayData.caffeine > 0 || dayData.sleep > 0 || dayData.strain > 0)) {
+            let color = '#4ade80'; // Green
+            if (dayData.score < 50) color = '#f87171'; // Red
+            else if (dayData.score < 75) color = '#fbbf24'; // Yellow/Orange
+            dayCard.style.backgroundColor = color;
+            dayCard.innerHTML = `<span class="day-num">${i}</span><span class="day-score">${dayData.score}%</span>`;
+        } else {
+            dayCard.innerHTML = `<span class="day-num">${i}</span>`;
+        }
+        grid.appendChild(dayCard);
+    }
+}
+
+function updateSidebarStats() {
+    const day = history[selectedDate] || { caffeine: 0, sleep: 0, score: 100, strain: 0 };
+    document.getElementById('totalCaffeine').textContent = day.caffeine;
+    document.getElementById('sideScore').textContent = day.score + "%";
+    
+    // Set exercise dropdown to match historical data if it exists
+    document.getElementById('exerciseSelect').value = day.strain || 0;
+}
+
+function saveAndRender() {
+    localStorage.setItem("trackerHistory", JSON.stringify(history));
+    renderCalendar();
+    updateSidebarStats();
+}
+
+function resetDay() {
+    if(confirm("Permanently clear all logged data?")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
