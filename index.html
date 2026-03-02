@@ -2,41 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Caffeine & Sleep Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Caffeine & Sleep Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="./script.js" defer></script>
-
 </head>
 <body>
 
   <div class="container">
-    <h1>Caffeine & Sleep Tracker</h1>
+    <h1>Bio-Tracker Pro</h1>
 
-    <div class="card">
+    <div class="card" id="caffeineCard">
       <h2>Log Caffeine</h2>
-      <input type="number" id="caffeineInput" placeholder="mg of caffeine">
+      <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search drink (e.g. Monster)">
+      <datalist id="drinkOptions">
+        </datalist>
+      <input type="number" id="caffeineInput" placeholder="or enter mg manually">
       <button onclick="addCaffeine()">Add</button>
-      <p>Total Today: <span id="totalCaffeine">0</span> mg</p>
+      <p>Total Today: <span id="totalCaffeine">0</span>/400 mg</p>
+      
       <div class="log-container">
-  <h3>Recent Logs</h3>
-  <ul id="caffeineLog">
-    </ul>
-</div>
+        <h3>Recent Logs</h3>
+        <ul id="caffeineLog"></ul>
+      </div>
     </div>
 
     <div class="card">
       <h2>Log Sleep</h2>
-      <input type="number" id="sleepInput" placeholder="hours of sleep">
-      <button onclick="setSleep()">Save</button>
+      <div class="input-group">
+        <input type="number" id="sleepInput" placeholder="Hours">
+        <select id="sleepQuality">
+          <option value="1.2">Deep/Restful</option>
+          <option value="1.0" selected>Average</option>
+          <option value="0.7">Restless</option>
+          <option value="0.5">Bad Sleep</option>
+        </select>
+      </div>
+      <button onclick="setSleep()">Save Sleep</button>
       <p>Last Night: <span id="sleepDisplay">0</span> hrs</p>
     </div>
 
     <div class="card">
       <h2>Recovery Score</h2>
-      <p id="score">0</p>
+      <div id="score">0%</div>
+      <div class="progress-container">
+        <div id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button onclick="resetDay()" style="background-color: #e63946;">Reset Day</button>
     </div>
   </div>
 
-  
 </body>
 </html>
