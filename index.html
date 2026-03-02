@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caffeine Tracker</title>
+  <title>Recovery Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="./script.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h1>Caffeine Tracker</h1>
+    <h1>Recovery Tracker</h1>
     <span id="editingDateLabel">Editing: Today</span>
     
     <div class="card stat-box">
-        <h2>Recovery Status</h2>
+        <h2>Current Recovery</h2>
         <div id="sideScore" style="color: #d4a373; font-size: 32px; font-weight:bold;">100%</div>
         <div style="font-size: 12px; color:#666"><span id="totalCaffeine">0</span>mg Logged</div>
     </div>
@@ -33,7 +33,9 @@
             <option value="5">Weightlifting (Light)</option>
             <option value="12">Weightlifting (Moderate)</option>
             <option value="20">Weightlifting (Heavy)</option>
+            <option value="5">Cardio (Light)</option>
             <option value="10">Cardio (Moderate)</option>
+            <option value="18">Cardio (Heavy)</option>
         </select>
     </div>
 
@@ -48,11 +50,17 @@
         </select>
         <button onclick="setSleep()">Save Sleep</button>
     </div>
+
+    <button onclick="resetDay()" style="background:#222; color:#ff6b6b; font-size:11px; margin-top: auto; padding: 10px;">Reset All Data</button>
   </div>
 
   <main class="main-content">
     <div class="calendar-section">
-      <h2 style="margin-bottom:20px">March 2026</h2>
+      <div class="calendar-nav">
+        <button class="nav-arrow" onclick="changeMonth(-1)">&#10094;</button>
+        <h2 id="currentMonthHeader">March 2026</h2>
+        <button class="nav-arrow" onclick="changeMonth(1)">&#10095;</button>
+      </div>
       <div class="weekday-header">
         <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
       </div>
