@@ -1,153 +1,112 @@
-let totalCaffeine = 0;
-let sleepHours = 0;
-let sleepQuality = 1.0;
-let caffeineEntries = [];
+let history = JSON.parse(localStorage.getItem("trackerHistory")) || {};
+let todayKey = new Date().toISOString().split('T')[0];
 
-// --- THE BIG DRINK DATABASE ---
-const drinkDatabase = [
-    // ENERGY DRINKS (10 Brands)
-    { name: "Alani Nu (All Flavors)", mg: 200 },
-    { name: "C4 Performance", mg: 200 },
-    { name: "C4 Ultimate", mg: 300 },
-    { name: "Monster Energy (Original)", mg: 160 },
-    { name: "Monster Ultra (Zero Sugar)", mg: 150 },
-    { name: "Red Bull (8.4oz)", mg: 80 },
-    { name: "Red Bull (12oz)", mg: 114 },
-    { name: "Celsius (12oz)", mg: 200 },
-    { name: "Celsius Heat (16oz)", mg: 300 },
-    { name: "Ghost Energy", mg: 200 },
-    { name: "Reign Total Body Fuel", mg: 300 },
-    { name: "Bang Energy", mg: 300 },
-    { name: "Rockstar Original", mg: 160 },
-    { name: "Bucked Up Energy", mg: 300 },
-    { name: "Prime Energy", mg: 200 },
-
-    // STARBUCKS (Common Sizes: Grande)
-    { name: "Starbucks Blonde Roast (Grande)", mg: 360 },
-    { name: "Starbucks Pike Place (Grande)", mg: 310 },
-    { name: "Starbucks Cold Brew (Grande)", mg: 205 },
-    { name: "Starbucks Nitro Cold Brew (Grande)", mg: 280 },
-    { name: "Starbucks Iced Coffee (Grande)", mg: 165 },
-    { name: "Starbucks Americano (Grande)", mg: 225 },
-    { name: "Starbucks Latte/Cappuccino (Grande)", mg: 150 },
-    { name: "Starbucks Espresso Shot (Solo)", mg: 75 },
-
-    // DUNKIN'
-    { name: "Dunkin' Hot Coffee (Medium)", mg: 210 },
-    { name: "Dunkin' Iced Coffee (Medium)", mg: 297 },
-    { name: "Dunkin' Cold Brew (Medium)", mg: 260 },
-    { name: "Dunkin' Americano (Medium)", mg: 284 },
-    { name: "Dunkin' Espresso Shot", mg: 118 },
-
-    // DUTCH BROS
-    { name: "Dutch Bros 911 (All Sizes)", mg: 280 },
-    { name: "Dutch Bros Double Torture", mg: 130 },
-    { name: "Dutch Bros Rebel Energy", mg: 80 },
-    { name: "Dutch Bros Cold Brew", mg: 293 },
-    { name: "Dutch Bros Americano", mg: 94 }
+const quotes = [
+    "Caffeine: The other vitamin C.",
+    "Sleep is a symptom of caffeine deprivation.",
+    "Decaf coffee only works if you throw it at people.",
+    "Procaffeinating: The tendency to not start anything until you've had coffee.",
+    "May your coffee be strong and your Monday be short.",
+    "I haven’t even had my coffee yet—don't look at me with those 'productive' eyes."
 ];
 
-// Load Database into Search Menu
+// --- BIG DRINK DATABASE ---
+const drinkDatabase = [
+    { name: "Alani Nu", mg: 200 }, { name: "C4 Performance", mg: 200 },
+    { name: "Monster Energy", mg: 160 }, { name: "Red Bull (8.4oz)", mg: 80 },
+    { name: "Celsius", mg: 200 }, { name: "Ghost Energy", mg: 200 },
+    { name: "Starbucks Cold Brew", mg: 205 }, { name: "Dunkin' Iced Coffee", mg: 297 }
+];
+
 window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    renderCalendar();
+    displayQuote();
+    setupSearch();
+    updateSidebarStats();
+});
+
+function setupSearch() {
     const list = document.getElementById('drinkOptions');
     drinkDatabase.forEach(drink => {
-        let option = document.createElement('option');
-        option.value = drink.name;
-        list.appendChild(option);
+        let opt = document.createElement('option');
+        opt.value = drink.name;
+        list.appendChild(opt);
     });
-
-    // Auto-fill MG when a drink is selected
     document.getElementById('caffeineSearch').addEventListener('input', (e) => {
         const selected = drinkDatabase.find(d => d.name === e.target.value);
         if (selected) document.getElementById('caffeineInput').value = selected.mg;
     });
-
-    loadData();
-});
+}
 
 function addCaffeine() {
-    const input = document.getElementById("caffeineInput");
-    const amount = parseInt(input.value);
-
-    if (!amount || amount <= 0) return;
-
-    totalCaffeine += amount;
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    caffeineEntries.push({ mg: amount, time: time, name: document.getElementById('caffeineSearch').value || "Manual Entry" });
-
-    // HEALTH WARNING POP-UP
-    if (totalCaffeine > 400) {
-        alert("⚠️ WARNING: You have exceeded the FDA recommended daily limit of 400mg of caffeine!");
-        document.getElementById('caffeineCard').style.borderColor = "red";
-    }
-
-    saveAndRefresh();
-    input.value = "";
-    document.getElementById('caffeineSearch').value = "";
+    let mg = parseInt(document.getElementById('caffeineInput').value) || 0;
+    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 0 };
+    history[todayKey].caffeine += mg;
+    updateDailyScore();
+    saveAndRender();
 }
 
 function setSleep() {
-    sleepHours = parseFloat(document.getElementById("sleepInput").value);
-    sleepQuality = parseFloat(document.getElementById("sleepQuality").value);
-    saveAndRefresh();
+    let hrs = parseFloat(document.getElementById('sleepInput').value) || 0;
+    let qual = parseFloat(document.getElementById('sleepQuality').value);
+    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 0 };
+    history[todayKey].sleep = hrs * qual;
+    updateDailyScore();
+    saveAndRender();
 }
 
-function calculateScore() {
+function updateDailyScore() {
+    let day = history[todayKey];
     let score = 100;
-    
-    // Caffeine Penalty
-    if (totalCaffeine > 200) score -= (totalCaffeine - 200) * 0.15;
-    if (totalCaffeine > 400) score -= 20;
-
-    // Sleep Quality Math
-    const effectiveSleep = sleepHours * sleepQuality;
-    score += (effectiveSleep - 7) * 8;
-
-    score = Math.max(0, Math.min(100, Math.round(score)));
-    
-    // Update Score and Progress Bar
-    const scoreEl = document.getElementById("score");
-    const bar = document.getElementById("progressBar");
-    scoreEl.textContent = score + "%";
-    bar.style.width = score + "%";
-    
-    // Bar color logic
-    if (score > 70) bar.style.backgroundColor = "#4CAF50";
-    else if (score > 40) bar.style.backgroundColor = "#FFC107";
-    else bar.style.backgroundColor = "#F44336";
+    if (day.caffeine > 200) score -= (day.caffeine - 200) * 0.15;
+    score += (day.sleep - 7) * 8;
+    day.score = Math.max(0, Math.min(100, Math.round(score)));
 }
 
-function saveAndRefresh() {
-    localStorage.setItem("totalCaffeine", totalCaffeine);
-    localStorage.setItem("caffeineEntries", JSON.stringify(caffeineEntries));
-    localStorage.setItem("sleepHours", sleepHours);
-    updateUI();
-    calculateScore();
+function renderCalendar() {
+    const grid = document.getElementById('calendarGrid');
+    grid.innerHTML = "";
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dateStr = `${new Date().toISOString().split('-').slice(0, 2).join('-')}-${i.toString().padStart(2, '0')}`;
+        const dayData = history[dateStr];
+        const dayCard = document.createElement('div');
+        dayCard.className = 'calendar-day';
+
+        if (dayData) {
+            let color = '#4ade80'; // Green
+            if (dayData.caffeine > 400) color = '#f87171'; // Red
+            else if (dayData.caffeine > 300) color = '#fb923c'; // Orange
+            else if (dayData.caffeine > 150) color = '#fbbf24'; // Yellow
+            dayCard.style.backgroundColor = color;
+            dayCard.innerHTML = `<span class="day-num">${i}</span><span class="day-score">${dayData.score}%</span>`;
+        } else {
+            dayCard.innerHTML = `<span class="day-num">${i}</span>`;
+        }
+        grid.appendChild(dayCard);
+    }
 }
 
-function updateUI() {
-    document.getElementById("totalCaffeine").textContent = totalCaffeine;
-    document.getElementById("sleepDisplay").textContent = sleepHours;
-    const list = document.getElementById("caffeineLog");
-    list.innerHTML = "";
-    [...caffeineEntries].reverse().forEach(entry => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span>${entry.time} - ${entry.name}</span> <strong>+${entry.mg}mg</strong>`;
-        list.appendChild(li);
-    });
+function displayQuote() {
+    const rand = Math.floor(Math.random() * quotes.length);
+    document.getElementById('quoteText').textContent = `"${quotes[rand]}"`;
 }
 
-function loadData() {
-    totalCaffeine = parseInt(localStorage.getItem("totalCaffeine")) || 0;
-    sleepHours = parseFloat(localStorage.getItem("sleepHours")) || 0;
-    caffeineEntries = JSON.parse(localStorage.getItem("caffeineEntries")) || [];
-    updateUI();
-    calculateScore();
+function saveAndRender() {
+    localStorage.setItem("trackerHistory", JSON.stringify(history));
+    renderCalendar();
+    updateSidebarStats();
+}
+
+function updateSidebarStats() {
+    if (history[todayKey]) {
+        document.getElementById('totalCaffeine').textContent = history[todayKey].caffeine;
+        document.getElementById('sideScore').textContent = history[todayKey].score + "%";
+    }
 }
 
 function resetDay() {
-    if(confirm("Reset everything for a new day?")) {
-        localStorage.clear();
-        location.reload();
-    }
+    if(confirm("Clear everything?")) { localStorage.clear(); location.reload(); }
 }
