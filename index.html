@@ -3,37 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caffeine Pro</title>
+  <title>Caffeine & Dependability Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="./script.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
-    <h1 id="currentDate">Month</h1>
-    <div class="card">
-        <h3>Today: <span id="totalCaffeine">0</span>mg</h3>
-        <h3>Recovery: <span id="sideScore">0%</span></h3>
+    <h1>Dependability Tracker</h1>
+    
+    <div class="card stat-box">
+        <h2 style="margin-bottom:5px">Daily Recovery</h2>
+        <div id="sideScore" style="color: #d4a373; font-size: 38px; font-weight:bold;">100%</div>
+        <div style="font-size: 14px; color:#888"><span id="totalCaffeine">0</span>mg Consumed</div>
     </div>
+
     <div class="card">
+        <h2>Log Caffeine</h2>
         <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search Drink...">
         <datalist id="drinkOptions"></datalist>
         <input type="number" id="caffeineInput" placeholder="mg">
         <button onclick="addCaffeine()">Add Entry</button>
     </div>
+
     <div class="card">
-        <input type="number" id="sleepInput" placeholder="Sleep Hours">
-        <select id="sleepQuality"><option value="1.2">Deep</option><option value="1.0" selected>Avg</option><option value="0.7">Restless</option></select>
+        <h2>Log Exercise</h2>
+        <select id="exerciseSelect" onchange="setExercise()">
+            <option value="0" selected>No Exercise Today</option>
+            <option value="5">Weightlifting (30m - 1h)</option>
+            <option value="12">Weightlifting (1h - 2h)</option>
+            <option value="20">Weightlifting (2h+ Heavy)</option>
+            <option value="8">Running (15m - 30m)</option>
+            <option value="15">Running (1h+ Cardio)</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <h2>Last Night's Sleep</h2>
+        <input type="number" id="sleepInput" placeholder="Hours">
+        <select id="sleepQuality">
+            <option value="" disabled selected>Quality...</option>
+            <option value="1.2">Deep / Restful</option>
+            <option value="1.0">Average</option>
+            <option value="0.7">Restless / Poor</option>
+        </select>
         <button onclick="setSleep()">Save Sleep</button>
     </div>
-    <button onclick="resetDay()" style="background:#444; color:#ff6b6b">Reset All</button>
+    
+    <button onclick="resetDay()" style="background:#222; color:#ff6b6b; font-size:11px; margin-top: auto;">Reset History</button>
   </div>
 
   <main class="main-content">
     <div class="calendar-section">
+      <div class="calendar-header">
+        <h2 id="currentMonthHeader">March 2026</h2>
+      </div>
+      <div class="weekday-header">
+        <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+      </div>
       <div id="calendarGrid" class="calendar-grid"></div>
     </div>
     <div class="quote-section">
-      <h2 id="quoteText">Loading quote...</h2>
+      <h2 id="quoteText">Loading...</h2>
+      <div id="sleepRecommendation">Target Sleep Tonight: 8 hours</div>
     </div>
   </main>
 </body>
