@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Caffeine & Sleep Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+  <div class="container">
+    <h1>Caffeine & Sleep Tracker</h1>
+
+    <div class="card">
+      <h2>Log Caffeine</h2>
+      <input type="number" id="caffeineInput" placeholder="mg of caffeine">
+      <button onclick="addCaffeine()">Add</button>
+      <p>Total Today: <span id="totalCaffeine">0</span> mg</p>
+    </div>
+
+    <div class="card">
+      <h2>Log Sleep</h2>
+      <input type="number" id="sleepInput" placeholder="hours of sleep">
+      <button onclick="setSleep()">Save</button>
+      <p>Last Night: <span id="sleepDisplay">0</span> hrs</p>
+    </div>
+
+    <div class="card">
+      <h2>Recovery Score</h2>
+      <p id="score">0</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
