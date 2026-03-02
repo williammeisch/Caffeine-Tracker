@@ -3,14 +3,11 @@ let todayKey = new Date().toISOString().split('T')[0];
 
 const quotes = [
     "Caffeine: The other vitamin C.",
-    "Sleep is a symptom of caffeine deprivation.",
-    "Decaf coffee only works if you throw it at people.",
     "Procaffeinating: The tendency to not start anything until you've had coffee.",
     "May your coffee be strong and your Monday be short.",
-    "I haven’t even had my coffee yet—don't look at me with those 'productive' eyes."
+    "Training is the essence of transformation."
 ];
 
-// --- BIG DRINK DATABASE ---
 const drinkDatabase = [
     { name: "Alani Nu", mg: 200 }, { name: "C4 Performance", mg: 200 },
     { name: "Monster Energy", mg: 160 }, { name: "Red Bull (8.4oz)", mg: 80 },
@@ -19,7 +16,6 @@ const drinkDatabase = [
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     renderCalendar();
     displayQuote();
     setupSearch();
@@ -41,8 +37,10 @@ function setupSearch() {
 
 function addCaffeine() {
     let mg = parseInt(document.getElementById('caffeineInput').value) || 0;
-    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 0 };
+    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 100, quality: 1.0, strain: 0 };
     history[todayKey].caffeine += mg;
+    document.getElementById('caffeineInput').value = "";
+    document.getElementById('caffeineSearch').value = "";
     updateDailyScore();
     saveAndRender();
 }
@@ -50,8 +48,18 @@ function addCaffeine() {
 function setSleep() {
     let hrs = parseFloat(document.getElementById('sleepInput').value) || 0;
     let qual = parseFloat(document.getElementById('sleepQuality').value);
-    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 0 };
-    history[todayKey].sleep = hrs * qual;
+    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 100, quality: 1.0, strain: 0 };
+    history[todayKey].sleep = hrs;
+    history[todayKey].quality = qual;
+    document.getElementById('sleepInput').value = "";
+    updateDailyScore();
+    saveAndRender();
+}
+
+function setExercise() {
+    let strain = parseFloat(document.getElementById('exerciseSelect').value) || 0;
+    if (!history[todayKey]) history[todayKey] = { caffeine: 0, sleep: 0, score: 100, quality: 1.0, strain: 0 };
+    history[todayKey].strain = strain;
     updateDailyScore();
     saveAndRender();
 }
@@ -59,27 +67,45 @@ function setSleep() {
 function updateDailyScore() {
     let day = history[todayKey];
     let score = 100;
-    if (day.caffeine > 200) score -= (day.caffeine - 200) * 0.15;
-    score += (day.sleep - 7) * 8;
+    
+    // Caffeine Penalty
+    if (day.caffeine > 200) score -= (day.caffeine - 200) * 0.2;
+    
+    // Sleep (Based on last night)
+    const effectiveSleep = day.sleep * (day.quality || 1.0);
+    if (effectiveSleep < 7) score -= (7 - effectiveSleep) * 10;
+
+    // Exercise Strain (Temporarily lowers score until you sleep)
+    score -= (day.strain || 0);
+
     day.score = Math.max(0, Math.min(100, Math.round(score)));
 }
 
 function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
     grid.innerHTML = "";
-    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'calendar-day empty';
+        grid.appendChild(empty);
+    }
 
     for (let i = 1; i <= daysInMonth; i++) {
-        const dateStr = `${new Date().toISOString().split('-').slice(0, 2).join('-')}-${i.toString().padStart(2, '0')}`;
+        const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
         const dayData = history[dateStr];
         const dayCard = document.createElement('div');
         dayCard.className = 'calendar-day';
 
-        if (dayData) {
-            let color = '#4ade80'; // Green
-            if (dayData.caffeine > 400) color = '#f87171'; // Red
-            else if (dayData.caffeine > 300) color = '#fb923c'; // Orange
-            else if (dayData.caffeine > 150) color = '#fbbf24'; // Yellow
+        if (dayData && (dayData.caffeine > 0 || dayData.sleep > 0 || dayData.strain > 0)) {
+            let color = '#4ade80';
+            if (dayData.score < 50) color = '#f87171';
+            else if (dayData.score < 75) color = '#fbbf24';
             dayCard.style.backgroundColor = color;
             dayCard.innerHTML = `<span class="day-num">${i}</span><span class="day-score">${dayData.score}%</span>`;
         } else {
@@ -87,6 +113,19 @@ function renderCalendar() {
         }
         grid.appendChild(dayCard);
     }
+}
+
+function updateSidebarStats() {
+    const day = history[todayKey] || { caffeine: 0, sleep: 0, score: 100, strain: 0 };
+    document.getElementById('totalCaffeine').textContent = day.caffeine;
+    document.getElementById('sideScore').textContent = day.score + "%";
+    
+    // Advanced recommendation
+    let needed = 8;
+    if (day.caffeine > 300) needed += 1;
+    if (day.strain > 10) needed += 1; // Need more sleep if you worked out
+    if (day.sleep < 6) needed += 1;
+    document.getElementById('sleepRecommendation').textContent = `Target Sleep Tonight: ${needed} hours`;
 }
 
 function displayQuote() {
@@ -100,13 +139,6 @@ function saveAndRender() {
     updateSidebarStats();
 }
 
-function updateSidebarStats() {
-    if (history[todayKey]) {
-        document.getElementById('totalCaffeine').textContent = history[todayKey].caffeine;
-        document.getElementById('sideScore').textContent = history[todayKey].score + "%";
-    }
-}
-
 function resetDay() {
-    if(confirm("Clear everything?")) { localStorage.clear(); location.reload(); }
+    if(confirm("Clear all historical data?")) { localStorage.clear(); location.reload(); }
 }
