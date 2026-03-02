@@ -3,57 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Caffeine & Sleep Tracker</title>
+  <title>Caffeine Pro</title>
   <link rel="stylesheet" href="style.css">
   <script src="./script.js" defer></script>
 </head>
 <body>
-
-  <div class="container">
-    <h1>Bio-Tracker Pro</h1>
-
-    <div class="card" id="caffeineCard">
-      <h2>Log Caffeine</h2>
-      <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search drink (e.g. Monster)">
-      <datalist id="drinkOptions">
-        </datalist>
-      <input type="number" id="caffeineInput" placeholder="or enter mg manually">
-      <button onclick="addCaffeine()">Add</button>
-      <p>Total Today: <span id="totalCaffeine">0</span>/400 mg</p>
-      
-      <div class="log-container">
-        <h3>Recent Logs</h3>
-        <ul id="caffeineLog"></ul>
-      </div>
-    </div>
-
+  <div class="sidebar">
+    <h1 id="currentDate">Month</h1>
     <div class="card">
-      <h2>Log Sleep</h2>
-      <div class="input-group">
-        <input type="number" id="sleepInput" placeholder="Hours">
-        <select id="sleepQuality">
-          <option value="1.2">Deep/Restful</option>
-          <option value="1.0" selected>Average</option>
-          <option value="0.7">Restless</option>
-          <option value="0.5">Bad Sleep</option>
-        </select>
-      </div>
-      <button onclick="setSleep()">Save Sleep</button>
-      <p>Last Night: <span id="sleepDisplay">0</span> hrs</p>
+        <h3>Today: <span id="totalCaffeine">0</span>mg</h3>
+        <h3>Recovery: <span id="sideScore">0%</span></h3>
     </div>
-
     <div class="card">
-      <h2>Recovery Score</h2>
-      <div id="score">0%</div>
-      <div class="progress-container">
-        <div id="progressBar"></div>
-      </div>
+        <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search Drink...">
+        <datalist id="drinkOptions"></datalist>
+        <input type="number" id="caffeineInput" placeholder="mg">
+        <button onclick="addCaffeine()">Add Entry</button>
     </div>
-
     <div class="card">
-      <button onclick="resetDay()" style="background-color: #e63946;">Reset Day</button>
+        <input type="number" id="sleepInput" placeholder="Sleep Hours">
+        <select id="sleepQuality"><option value="1.2">Deep</option><option value="1.0" selected>Avg</option><option value="0.7">Restless</option></select>
+        <button onclick="setSleep()">Save Sleep</button>
     </div>
+    <button onclick="resetDay()" style="background:#444; color:#ff6b6b">Reset All</button>
   </div>
 
+  <main class="main-content">
+    <div class="calendar-section">
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+    <div class="quote-section">
+      <h2 id="quoteText">Loading quote...</h2>
+    </div>
+  </main>
 </body>
 </html>
