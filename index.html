@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Recovery Tracker Pro</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="./script.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=2">
+  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
@@ -21,7 +21,7 @@
 
     <div class="card">
         <h2>Log Caffeine</h2>
-        <input type="text" id="caffeineSearch" placeholder="Search brands, flavors, sizes..." autocomplete="off">
+        <input type="text" id="caffeineSearch" placeholder="Search brands or flavors..." autocomplete="off">
         <div id="searchResults" class="search-dropdown" style="display: none;"></div>
         
         <div class="custom-input-row">
@@ -71,17 +71,17 @@
     </div>
 
     <div id="dailyFeedback" class="feedback-box" style="display: none;">
-        <span id="feedbackText">Select a completed day to see recovery insights.</span>
+        <span id="feedbackText"></span>
     </div>
 
     <div id="fdaMainWarning" class="fda-alert-box" style="display: none;">
-        <strong>FDA Safety Alert:</strong> You've exceeded 400mg today.
+        <strong>FDA Safety Alert:</strong> You've exceeded the 400mg daily limit.
     </div>
 
     <div class="info-footer">
       <div class="info-card">
         <h3>Recovery Logic</h3>
-        <p>100% baseline. Deductions: Caffeine > 200mg, Sleep < 7hrs (adjusted by quality), and Exercise strain.</p>
+        <p>100% baseline. Deductions apply for caffeine > 200mg, sleep < 7hrs, and exercise strain.</p>
       </div>
     </div>
   </main>
