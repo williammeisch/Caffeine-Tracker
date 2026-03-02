@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Recovery Tracker</title>
   <link rel="stylesheet" href="style.css">
   <script src="./script.js" defer></script>
@@ -14,17 +14,19 @@
     
     <div class="card stat-box">
         <h2>Current Recovery</h2>
-        <div id="sideScore" style="color: #d4a373; font-size: 32px; font-weight:bold;">--</div>
-        <div style="font-size: 12px; color:#666"><span id="totalCaffeine">0</span>mg Logged</div>
-        <div id="fdaWarningSmall" style="color: #ff6b6b; font-size: 10px; margin-top: 5px; display: none;">Warning: Over FDA Daily Limit</div>
+        <div id="sideScore" class="big-score">--</div>
+        <div class="stat-subtext"><span id="totalCaffeine">0</span>mg Logged</div>
+        <div id="fdaWarningSmall" class="warning-text" style="display: none;">Warning: Over FDA Limit</div>
     </div>
 
     <div class="card">
         <h2>Log Caffeine</h2>
-        <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search Drink...">
+        <input type="text" id="caffeineSearch" list="drinkOptions" placeholder="Search 1,000+ drinks...">
         <datalist id="drinkOptions"></datalist>
         <input type="number" id="caffeineInput" placeholder="mg">
         <button onclick="addCaffeine()">Add Entry</button>
+        
+        <div id="caffeineLogList" class="log-history"></div>
     </div>
 
     <div class="card">
@@ -39,7 +41,7 @@
             <option value="18">Cardio (Heavy)</option>
         </select>
 
-        <input type="number" id="sleepInput" placeholder="Hours slept last night" style="margin-top: 10px;">
+        <input type="number" id="sleepInput" placeholder="Hours slept last night">
         <select id="sleepQuality">
             <option value="" disabled selected>Quality...</option>
             <option value="1.2">Deep</option>
@@ -47,7 +49,7 @@
             <option value="0.7">Restless</option>
         </select>
         
-        <button onclick="submitDailyProfile()" style="margin-top: 10px; background: #d4a373;">Submit Recovery Data</button>
+        <button onclick="submitDailyProfile()" class="primary-btn">Submit Recovery Data</button>
     </div>
 
     <button onclick="resetDayData()" class="reset-btn">Restart for Today</button>
@@ -67,18 +69,18 @@
     </div>
 
     <div id="fdaMainWarning" class="fda-alert-box" style="display: none;">
-        <strong>Safety Alert:</strong> You have exceeded the FDA recommended limit of 400mg of caffeine today. This may lead to increased heart rate or jitteriness. Try to reduce intake tomorrow.
+        <strong>Safety Alert:</strong> You have exceeded the FDA recommended limit of 400mg of caffeine today.
     </div>
 
     <div class="info-footer">
       <div class="info-card">
         <h3>Calculation Logic</h3>
-        <p>Your score is calculated only after submitting your Exercise and Sleep data. We use a 100% baseline, deducting for excessive caffeine and physical strain, balanced against sleep recovery.</p>
+        <p>Your score is calculated after submitting Exercise and Sleep data. We use a 100% baseline, deducting for excessive caffeine and physical strain.</p>
       </div>
     </div>
     
     <div class="disclaimer-text">
-        This tool is for informational and entertainment purposes only. It does not provide medical advice, diagnosis, or treatment. Caffeine sensitivity varies by individual. Consult a healthcare professional before altering your diet or exercise habits.
+        For informational/entertainment purposes only. Not medical advice.
     </div>
   </main>
 </body>
