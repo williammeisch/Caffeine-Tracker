@@ -5,6 +5,7 @@ let currentViewYear = today.getFullYear();
 let selectedDate = today.toISOString().split('T')[0];
 const todayKey = today.toISOString().split('T')[0];
 
+// We will expand this to 1,000+ later, for now we keep the core
 const drinkDatabase = [
     { name: "Alani Nu", mg: 200 }, { name: "C4 Performance", mg: 200 },
     { name: "Monster Energy", mg: 160 }, { name: "Red Bull (8.4oz)", mg: 80 },
@@ -35,7 +36,6 @@ function changeMonth(delta) {
     currentViewMonth += delta;
     if (currentViewMonth < 0) { currentViewMonth = 11; currentViewYear--; }
     else if (currentViewMonth > 11) { currentViewMonth = 0; currentViewYear++; }
-    if (currentViewYear < 2026) { currentViewYear = 2026; currentViewMonth = 0; }
     renderCalendar();
 }
 
@@ -50,10 +50,20 @@ function selectDate(dateStr) {
 
 function addCaffeine() {
     let mg = parseInt(document.getElementById('caffeineInput').value) || 0;
-    if (!history[selectedDate]) history[selectedDate] = { caffeine: 0, sleep: 0, score: null, quality: 1.0, strain: 0 };
-    history[selectedDate].caffeine += mg;
+    let name = document.getElementById('caffeineSearch').value || "Custom Drink";
+    
+    if (!history[selectedDate]) history[selectedDate] = { caffeineItems: [], sleep: 0, score: null, quality: 1.0, strain: 0 };
+    if (!history[selectedDate].caffeineItems) history[selectedDate].caffeineItems = [];
+
+    history[selectedDate].caffeineItems.push({ name: name, mg: mg, id: Date.now() });
+    
     document.getElementById('caffeineInput').value = "";
     document.getElementById('caffeineSearch').value = "";
+    saveAndRender();
+}
+
+function deleteCaffeine(id) {
+    history[selectedDate].caffeineItems = history[selectedDate].caffeineItems.filter(item => item.id !== id);
     saveAndRender();
 }
 
@@ -62,30 +72,27 @@ function submitDailyProfile() {
     let qual = parseFloat(document.getElementById('sleepQuality').value) || 1.0;
     let strain = parseFloat(document.getElementById('exerciseSelect').value) || 0;
 
-    if (!history[selectedDate]) history[selectedDate] = { caffeine: 0, sleep: 0, score: null, quality: 1.0, strain: 0 };
+    if (!history[selectedDate]) history[selectedDate] = { caffeineItems: [], sleep: 0, score: null, quality: 1.0, strain: 0 };
     
     history[selectedDate].sleep = hrs;
     history[selectedDate].quality = qual;
     history[selectedDate].strain = strain;
 
-    // Trigger calculation
     let day = history[selectedDate];
+    let totalMg = (day.caffeineItems || []).reduce((sum, item) => sum + item.mg, 0);
+    
     let score = 100;
-    if (day.caffeine > 200) score -= (day.caffeine - 200) * 0.2;
+    if (totalMg > 200) score -= (totalMg - 200) * 0.2;
     const effectiveSleep = day.sleep * (day.quality || 1.0);
     if (effectiveSleep < 7) score -= (7 - effectiveSleep) * 10;
     score -= day.strain;
     
     day.score = Math.max(0, Math.min(100, Math.round(score)));
-
-    // Clear sleep input specifically
-    document.getElementById('sleepInput').value = "";
     saveAndRender();
 }
 
 function renderCalendar() {
     const grid = document.getElementById('calendarGrid');
-    if (!grid) return;
     grid.innerHTML = "";
     const monthDisplay = new Date(currentViewYear, currentViewMonth);
     document.getElementById('currentMonthHeader').textContent = monthDisplay.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -93,9 +100,7 @@ function renderCalendar() {
     const daysInMonth = new Date(currentViewYear, currentViewMonth + 1, 0).getDate();
 
     for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement('div');
-        empty.className = 'calendar-day empty';
-        grid.appendChild(empty);
+        grid.appendChild(document.createElement('div')).className = 'calendar-day empty';
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
@@ -121,14 +126,23 @@ function renderCalendar() {
 }
 
 function updateSidebarStats() {
-    const day = history[selectedDate] || { caffeine: 0, sleep: 0, score: null, strain: 0 };
-    document.getElementById('totalCaffeine').textContent = day.caffeine;
+    const day = history[selectedDate] || { caffeineItems: [], sleep: 0, score: null, strain: 0 };
+    const totalMg = (day.caffeineItems || []).reduce((sum, item) => sum + item.mg, 0);
+    
+    document.getElementById('totalCaffeine').textContent = totalMg;
     document.getElementById('sideScore').textContent = day.score !== null ? day.score + "%" : "--";
-    document.getElementById('exerciseSelect').value = day.strain || 0;
+    
+    // Render History List
+    const logList = document.getElementById('caffeineLogList');
+    logList.innerHTML = "";
+    (day.caffeineItems || []).forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'log-item';
+        div.innerHTML = `<span>${item.name} (${item.mg}mg)</span><button onclick="deleteCaffeine(${item.id})">✕</button>`;
+        logList.appendChild(div);
+    });
 
-    // FDA Warning Logic
-    const fdaLimit = 400;
-    const isOver = day.caffeine > fdaLimit;
+    const isOver = totalMg > 400;
     document.getElementById('fdaWarningSmall').style.display = isOver ? 'block' : 'none';
     document.getElementById('fdaMainWarning').style.display = isOver ? 'block' : 'none';
 }
@@ -140,7 +154,7 @@ function saveAndRender() {
 }
 
 function resetDayData() {
-    if(confirm("Discard all entries for this specific day and restart?")) {
+    if(confirm("Discard all entries for this specific day?")) {
         delete history[selectedDate];
         saveAndRender();
     }
