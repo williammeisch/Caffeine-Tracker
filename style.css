@@ -1,1 +1,86 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
+/* Background */
+body {
+  background: linear-gradient(135deg, #4b2e2b, #2f1b18);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #2f1b18;
+}
+
+/* Main Container */
+.container {
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  color: #f3e5d8;
+  margin-bottom: 25px;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+/* Card Style */
+.card {
+  background: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* Card Headers */
+.card h2 {
+  margin-bottom: 15px;
+  color: #4b2e2b;
+}
+
+/* Inputs */
+input {
+  padding: 10px;
+  width: 70%;
+  border-radius: 8px;
+  border: 2px solid #d4a373;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Buttons */
+button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #d4a373;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background-color: #b5835a;
+  transform: translateY(-2px);
+}
+
+/* Text inside cards */
+.card p {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Recovery Score */
+#score {
+  font-size: 32px;
+  color: #d4a373;
+}
