@@ -4,23 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Recovery Tracker Pro</title>
-  <link rel="stylesheet" href="style.css?v=123">
+  <link rel="stylesheet" href="style.css?v=4.0">
   <script src="script.js" defer></script>
 </head>
 <body>
   <div class="sidebar">
     <h1>Recovery Tracker</h1>
     <span id="editingDateLabel">Editing: Today</span>
-    <div class="card"><div id="sideScore" class="big-score">--</div><div class="stat-subtext"><span id="totalCaffeine">0</span>mg Logged</div><div id="fdaWarningSmall" class="warning-text" style="display: none;">Warning: Over FDA Limit</div></div>
-    <div class="card"><h2>Log Caffeine</h2><input type="text" id="caffeineSearch" placeholder="Search..." autocomplete="off"><div id="searchResults" class="search-dropdown" style="display: none;"></div><div style="display:flex;gap:5px;margin-top:5px;"><input type="number" id="caffeineInput" placeholder="mg"><button onclick="addCaffeine()" style="width:60px;padding:0;">Add</button></div><div id="caffeineLogList" class="log-history"></div></div>
-    <div class="card"><h2>Sleep & Exercise</h2><select id="exerciseSelect"><option value="0">No Exercise</option><option value="15">Moderate</option><option value="30">Heavy</option></select><input type="number" id="sleepInput" placeholder="Hours"><select id="sleepQuality"><option value="1.2">Deep</option><option value="1.0" selected>Average</option><option value="0.7">Restless</option></select><button onclick="submitDailyProfile()" style="margin-top:10px;">Submit Day</button></div>
+    <div class="card stat-box">
+        <h2>Current Recovery</h2>
+        <div id="sideScore" class="big-score">--</div>
+        <div class="stat-subtext"><span id="totalCaffeine">0</span>mg Logged</div>
+        <div id="fdaWarningSmall" class="warning-text" style="display: none;">Warning: Over FDA Limit</div>
+    </div>
+    <div class="card">
+        <h2>Log Caffeine</h2>
+        <input type="text" id="caffeineSearch" placeholder="Search Red Bull, Ghost, Starbucks..." autocomplete="off">
+        <div id="searchResults" class="search-dropdown" style="display: none;"></div>
+        <div style="display:flex; gap:5px; margin-top:5px;">
+            <input type="number" id="caffeineInput" placeholder="mg">
+            <button onclick="addCaffeine()" style="width:60px; padding:0;">Add</button>
+        </div>
+        <div id="caffeineLogList" class="log-history"></div>
+    </div>
+    <div class="card">
+        <h2>Sleep & Exercise</h2>
+        <select id="exerciseSelect">
+            <option value="0">No Exercise</option>
+            <option value="15">Moderate Exercise</option>
+            <option value="30">Heavy / Intense Workout</option>
+        </select>
+        <input type="number" id="sleepInput" placeholder="Sleep Hours">
+        <select id="sleepQuality">
+            <option value="1.2">Deep Sleep</option>
+            <option value="1.0" selected>Average Sleep</option>
+            <option value="0.7">Restless Sleep</option>
+        </select>
+        <button onclick="submitDailyProfile()" style="margin-top:10px;">Submit Day</button>
+    </div>
     <button onclick="resetDayData()" class="reset-btn">Reset Today</button>
   </div>
+
   <main class="main-content">
-    <div class="calendar-section"><div class="calendar-nav"><button onclick="changeMonth(-1)">&#10094;</button><h2 id="currentMonthHeader"></h2><button onclick="changeMonth(1)">&#10095;</button></div><div id="calendarGrid" class="calendar-grid"></div></div>
-    <div id="dailyFeedback" class="feedback-box" style="display:none;"><span id="feedbackText"></span></div>
-    <div id="fdaMainWarning" class="fda-alert-box" style="display:none;">FDA Alert: Over 400mg</div>
-    <div class="info-footer"><div class="info-card"><h3>Recovery Logic</h3><p>Score decreases with high caffeine and low sleep.</p></div></div>
+    <div class="calendar-section">
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)">&#10094;</button>
+        <h2 id="currentMonthHeader"></h2>
+        <button onclick="changeMonth(1)">&#10095;</button>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div id="dailyFeedback" class="feedback-box" style="display: none;">
+        <span id="feedbackText"></span>
+    </div>
+
+    <div id="fdaMainWarning" class="fda-alert-box" style="display: none;">
+        <strong>FDA Alert:</strong> Over 400mg limit.
+    </div>
+
+    <div class="info-footer">
+      <div class="info-card">
+        <h3>Recovery Logic</h3>
+        <p>Calculated based on stimulant load and recovery sleep. 100% baseline minus caffeine penalties and sleep deficits.</p>
+        <div class="disclaimer-line">
+            This tool is for informational/entertainment purposes only. It is not medical or professional health guidance. Use your own judgment.
+        </div>
+      </div>
+    </div>
   </main>
 </body>
 </html>
