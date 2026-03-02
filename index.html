@@ -14,8 +14,9 @@
     
     <div class="card stat-box">
         <h2>Current Recovery</h2>
-        <div id="sideScore" style="color: #d4a373; font-size: 32px; font-weight:bold;">100%</div>
+        <div id="sideScore" style="color: #d4a373; font-size: 32px; font-weight:bold;">--</div>
         <div style="font-size: 12px; color:#666"><span id="totalCaffeine">0</span>mg Logged</div>
+        <div id="fdaWarningSmall" style="color: #ff6b6b; font-size: 10px; margin-top: 5px; display: none;">Warning: Over FDA Daily Limit</div>
     </div>
 
     <div class="card">
@@ -27,8 +28,8 @@
     </div>
 
     <div class="card">
-        <h2>Exercise Level</h2>
-        <select id="exerciseSelect" onchange="setExercise()">
+        <h2>Exercise & Sleep Log</h2>
+        <select id="exerciseSelect">
             <option value="0">No Exercise</option>
             <option value="5">Weightlifting (Light)</option>
             <option value="12">Weightlifting (Moderate)</option>
@@ -37,21 +38,19 @@
             <option value="10">Cardio (Moderate)</option>
             <option value="18">Cardio (Heavy)</option>
         </select>
-    </div>
 
-    <div class="card">
-        <h2>Sleep Log</h2>
-        <input type="number" id="sleepInput" placeholder="Hours slept last night">
+        <input type="number" id="sleepInput" placeholder="Hours slept last night" style="margin-top: 10px;">
         <select id="sleepQuality">
             <option value="" disabled selected>Quality...</option>
             <option value="1.2">Deep</option>
             <option value="1.0">Average</option>
             <option value="0.7">Restless</option>
         </select>
-        <button onclick="setSleep()">Save Sleep</button>
+        
+        <button onclick="submitDailyProfile()" style="margin-top: 10px; background: #d4a373;">Submit Recovery Data</button>
     </div>
 
-    <button onclick="resetDay()" class="reset-btn">Reset All Data</button>
+    <button onclick="resetDayData()" class="reset-btn">Restart for Today</button>
   </div>
 
   <main class="main-content">
@@ -64,14 +63,17 @@
       <div class="weekday-header">
         <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
       </div>
-      <div id="calendarGrid" class="calendar-grid">
-        </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div id="fdaMainWarning" class="fda-alert-box" style="display: none;">
+        <strong>Safety Alert:</strong> You have exceeded the FDA recommended limit of 400mg of caffeine today. This may lead to increased heart rate or jitteriness. Try to reduce intake tomorrow.
     </div>
 
     <div class="info-footer">
       <div class="info-card">
         <h3>Calculation Logic</h3>
-        <p>Recovery is calculated as a baseline of 100%. Deductions are applied for caffeine consumption exceeding 200mg and physical strain from exercise. This is then balanced against sleep duration and quality to estimate metabolic readiness.</p>
+        <p>Your score is calculated only after submitting your Exercise and Sleep data. We use a 100% baseline, deducting for excessive caffeine and physical strain, balanced against sleep recovery.</p>
       </div>
     </div>
     
