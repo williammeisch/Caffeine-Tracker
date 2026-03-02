@@ -1,147 +1,27 @@
-const DRINK_ARCHIVE = [
-    // --- RED BULL (EVERY SIZE/FLAVOR) ---
-    { name: "Red Bull Original (8.4oz)", mg: 80 }, { name: "Red Bull Original (12oz)", mg: 114 }, { name: "Red Bull Original (16oz)", mg: 151 }, { name: "Red Bull Original (20oz)", mg: 189 },
-    { name: "Red Bull Sugarfree (8.4oz)", mg: 80 }, { name: "Red Bull Sugarfree (12oz)", mg: 114 }, { name: "Red Bull Blue Edition (Blueberry)", mg: 80 }, { name: "Red Bull Red Edition (Watermelon)", mg: 80 },
-    { name: "Red Bull Yellow Edition (Tropical)", mg: 80 }, { name: "Red Bull Amber Edition (Strawberry Apricot)", mg: 80 }, { name: "Red Bull Sea Blue (Juneberry)", mg: 80 },
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: #0b0b0b; color: #fff; height: 100vh; display: flex; overflow: hidden; }
 
-    // --- MONSTER ENERGY (FLAVORS) ---
-    { name: "Monster Original (16oz)", mg: 160 }, { name: "Monster Zero Sugar", mg: 160 }, { name: "Monster Lo-Carb", mg: 160 }, { name: "Monster Ultra White", mg: 150 },
-    { name: "Monster Ultra Peachy Keen", mg: 150 }, { name: "Monster Ultra Strawberry Dreams", mg: 150 }, { name: "Monster Ultra Watermelon", mg: 150 }, { name: "Monster Ultra Gold", mg: 150 },
-    { name: "Monster Ultra Paradise", mg: 150 }, { name: "Monster Ultra Blue", mg: 150 }, { name: "Monster Ultra Red", mg: 150 }, { name: "Monster Ultra Violet", mg: 150 },
-    { name: "Monster Mango Loco", mg: 160 }, { name: "Monster Pipeline Punch", mg: 160 }, { name: "Monster Rehab Lemonade", mg: 160 }, { name: "Java Monster Mean Bean", mg: 200 },
+.sidebar { width: 340px; background: #141414; padding: 20px; border-right: 1px solid #222; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex-shrink: 0; }
+.card { background: #1f1f1f; padding: 18px; border-radius: 12px; border: 1px solid #2a2a2a; position: relative; }
+h1 { font-size: 20px; color: #d4a373; text-align: center; margin-bottom: 5px; }
+#editingDateLabel { font-size: 11px; color: #d4a373; text-align: center; margin-bottom: 10px; display: block; font-weight: bold; }
+h2 { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 10px; }
 
-    // --- GHOST ENERGY ---
-    { name: "Ghost Sour Patch Kids Red", mg: 200 }, { name: "Ghost Sour Patch Kids Blue", mg: 200 }, { name: "Ghost Warheads Apple", mg: 200 }, { name: "Ghost Warheads Watermelon", mg: 200 },
-    { name: "Ghost Orange Cream", mg: 200 }, { name: "Ghost Swedish Fish", mg: 200 }, { name: "Ghost Cherry Limeade", mg: 200 }, { name: "Ghost Citrus", mg: 200 },
+input, select { width: 100%; padding: 12px; margin: 5px 0; background: #2a2a2a; border: 1px solid #333; color: white; border-radius: 8px; font-size: 15px; }
+button { width: 100%; padding: 14px; background: #d4a373; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #141414; }
 
-    // --- STARBUCKS FULL CAFFEINE MENU ---
-    { name: "Starbucks Pike Place (Tall)", mg: 235 }, { name: "Starbucks Pike Place (Grande)", mg: 310 }, { name: "Starbucks Pike Place (Venti)", mg: 410 },
-    { name: "Starbucks Cold Brew (Tall)", mg: 155 }, { name: "Starbucks Cold Brew (Grande)", mg: 205 }, { name: "Starbucks Cold Brew (Venti)", mg: 310 },
-    { name: "Starbucks Nitro Cold Brew (Tall)", mg: 215 }, { name: "Starbucks Nitro Cold Brew (Grande)", mg: 280 }, { name: "Starbucks Americano (Grande)", mg: 225 },
-    { name: "Starbucks Iced Espresso (Grande)", mg: 225 }, { name: "Starbucks Refreshers (Grande)", mg: 45 }, { name: "Starbucks Pink Drink (Grande)", mg: 45 },
+.search-dropdown { position: absolute; top: 65px; left: 0; width: 100%; background: #2a2a2a; border: 1px solid #444; border-radius: 8px; z-index: 1000; max-height: 250px; overflow-y: auto; }
+.search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #333; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+.search-item:hover { background: #d4a373; color: #000; }
 
-    // --- DUNKIN MENU ---
-    { name: "Dunkin Hot Coffee (Small)", mg: 150 }, { name: "Dunkin Hot Coffee (Medium)", mg: 210 }, { name: "Dunkin Hot Coffee (Large)", mg: 300 },
-    { name: "Dunkin Iced Coffee (Small)", mg: 198 }, { name: "Dunkin Iced Coffee (Medium)", mg: 297 }, { name: "Dunkin Iced Coffee (Large)", mg: 396 },
-    { name: "Dunkin Cold Brew (Medium)", mg: 260 }, { name: "Dunkin Espresso Shot", mg: 118 },
+.main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: #0b0b0b; align-items: center; }
+.calendar-section { padding: 40px 20px; width: 100%; max-width: 900px; }
+.calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; width: 100%; }
+.calendar-day { aspect-ratio: 1.3 / 1; background: #1a1a1a; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1px solid #222; cursor: pointer; font-size: 16px; }
+.calendar-day.selected { border: 3px solid #d4a373; background: #222; }
+.day-num { position: absolute; top: 10px; left: 12px; font-size: 12px; color: #555; }
+.day-score { font-weight: 800; color: #000; font-size: 20px; }
 
-    // --- SODAS (CANS & BOTTLES) ---
-    { name: "Coke Can (12oz)", mg: 34 }, { name: "Coke Bottle (20oz)", mg: 57 }, { name: "Diet Coke Can (12oz)", mg: 46 }, { name: "Diet Coke Bottle (20oz)", mg: 76 },
-    { name: "Pepsi Can (12oz)", mg: 38 }, { name: "Pepsi Bottle (20oz)", mg: 63 }, { name: "Pepsi Zero Sugar Bottle (20oz)", mg: 115 }, { name: "Mountain Dew Can (12oz)", mg: 54 },
-    { name: "Mountain Dew Bottle (20oz)", mg: 91 }, { name: "Dr Pepper Can (12oz)", mg: 41 }, { name: "Dr Pepper Bottle (20oz)", mg: 68 }, { name: "Mello Yello", mg: 51 },
-
-    // --- CELSIUS & ALANI ---
-    { name: "Celsius (12oz Can - All Flavors)", mg: 200 }, { name: "Celsius Essentials (16oz)", mg: 270 }, { name: "Alani Nu (All Flavors)", mg: 200 },
-
-    // --- PRE-WORKOUTS ---
-    { name: "Ryse Godzilla (2 Scoops)", mg: 400 }, { name: "C4 Ultimate", mg: 300 }, { name: "Bucked Up LFG", mg: 300 }, { name: "Total War", mg: 250 }
-];
-
-let history = JSON.parse(localStorage.getItem("trackerHistory")) || {};
-let today = new Date();
-let currentViewMonth = today.getMonth();
-let currentViewYear = today.getFullYear();
-let selectedDate = today.toISOString().split('T')[0];
-const todayKey = today.toISOString().split('T')[0];
-
-window.addEventListener('DOMContentLoaded', () => { renderCalendar(); initSearch(); updateSidebarStats(); });
-
-function initSearch() {
-    const searchInput = document.getElementById('caffeineSearch');
-    const resultsDiv = document.getElementById('searchResults');
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        if (query.length < 2) { resultsDiv.style.display = 'none'; return; }
-        const words = query.split(' ');
-        const filtered = DRINK_ARCHIVE.filter(d => words.every(w => d.name.toLowerCase().includes(w))).slice(0, 15);
-        if (filtered.length > 0) {
-            resultsDiv.innerHTML = filtered.map(d => `<div class="search-item" onclick="selectDrink('${d.name.replace(/'/g, "\\'")}', ${d.mg})">${d.name} <span>${d.mg}mg</span></div>`).join('');
-            resultsDiv.style.display = 'block';
-        } else { resultsDiv.style.display = 'none'; }
-    });
-    document.addEventListener('click', (e) => { if (!e.target.closest('.card')) resultsDiv.style.display = 'none'; });
-}
-
-function selectDrink(name, mg) {
-    document.getElementById('caffeineSearch').value = name;
-    document.getElementById('caffeineInput').value = mg;
-    document.getElementById('searchResults').style.display = 'none';
-}
-
-function addCaffeine() {
-    let mg = parseInt(document.getElementById('caffeineInput').value) || 0;
-    let name = document.getElementById('caffeineSearch').value || "Custom Drink";
-    if (!history[selectedDate]) history[selectedDate] = { caffeineItems: [], sleep: 0, score: null, quality: 1.0, strain: 0 };
-    history[selectedDate].caffeineItems.push({ name: name, mg: mg, id: Date.now() });
-    document.getElementById('caffeineInput').value = "";
-    document.getElementById('caffeineSearch').value = "";
-    saveAndRender();
-}
-
-function deleteCaffeine(id) {
-    history[selectedDate].caffeineItems = history[selectedDate].caffeineItems.filter(i => i.id !== id);
-    saveAndRender();
-}
-
-function submitDailyProfile() {
-    let hrs = parseFloat(document.getElementById('sleepInput').value) || 0;
-    let qual = parseFloat(document.getElementById('sleepQuality').value) || 1.0;
-    let strain = parseFloat(document.getElementById('exerciseSelect').value) || 0;
-    if (!history[selectedDate]) history[selectedDate] = { caffeineItems: [], sleep: 0, score: null, quality: 1.0, strain: 0 };
-    let day = history[selectedDate];
-    day.sleep = hrs; day.quality = qual; day.strain = strain;
-    let totalMg = (day.caffeineItems || []).reduce((s, i) => s + i.mg, 0);
-    
-    let score = 100;
-    if (totalMg > 200) score -= (totalMg - 200) * 0.2;
-    const effectiveSleep = day.sleep * day.quality;
-    if (effectiveSleep < 7) score -= (7 - effectiveSleep) * 10;
-    score -= day.strain;
-    
-    day.score = Math.max(0, Math.min(100, Math.round(score)));
-    saveAndRender();
-}
-
-function updateSidebarStats() {
-    const day = history[selectedDate] || { caffeineItems: [], sleep: 0, score: null, strain: 0 };
-    const totalMg = (day.caffeineItems || []).reduce((s, i) => s + i.mg, 0);
-    document.getElementById('totalCaffeine').textContent = totalMg;
-    document.getElementById('sideScore').textContent = day.score !== null ? day.score + "%" : "--";
-    document.getElementById('caffeineLogList').innerHTML = (day.caffeineItems || []).map(i => `<div class="log-item"><span>${i.name} (${i.mg}mg)</span><button onclick="deleteCaffeine(${i.id})">✕</button></div>`).join('');
-    
-    const fb = document.getElementById('dailyFeedback');
-    if (day.score !== null) {
-        fb.style.display = 'block';
-        document.getElementById('feedbackText').textContent = day.score >= 80 ? "Strong recovery. Ready for high performance." : day.score >= 50 ? "Moderate recovery. Manage your stimulant load today." : "Low Recovery: Rest and hydration are vital today.";
-    } else { fb.style.display = 'none'; }
-    
-    const isOver = totalMg > 400;
-    document.getElementById('fdaWarningSmall').style.display = isOver ? 'block' : 'none';
-    document.getElementById('fdaMainWarning').style.display = isOver ? 'block' : 'none';
-}
-
-function renderCalendar() {
-    const grid = document.getElementById('calendarGrid'); grid.innerHTML = "";
-    const firstDay = new Date(currentViewYear, currentViewMonth, 1).getDay();
-    const daysInMonth = new Date(currentViewYear, currentViewMonth + 1, 0).getDate();
-    document.getElementById('currentMonthHeader').textContent = new Date(currentViewYear, currentViewMonth).toLocaleString('default', { month: 'long', year: 'numeric' });
-    for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div')).className = 'calendar-day empty';
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dateStr = `${currentViewYear}-${(currentViewMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-        const dayData = history[dateStr];
-        const dayCard = document.createElement('div');
-        dayCard.className = 'calendar-day';
-        if (dateStr === selectedDate) dayCard.classList.add('selected');
-        if (dayData && dayData.score !== null) {
-            dayCard.style.backgroundColor = dayData.score < 50 ? '#f87171' : dayData.score < 75 ? '#fbbf24' : '#4ade80';
-            dayCard.innerHTML = `<span class="day-num">${i}</span><span class="day-score">${dayData.score}%</span>`;
-        } else { dayCard.innerHTML = `<span class="day-num">${i}</span>`; }
-        dayCard.onclick = () => selectDate(dateStr);
-        grid.appendChild(dayCard);
-    }
-}
-
-function changeMonth(d) { currentViewMonth += d; if (currentViewMonth < 0) { currentViewMonth = 11; currentViewYear--; } else if (currentViewMonth > 11) { currentViewMonth = 0; currentViewYear++; } renderCalendar(); }
-function selectDate(d) { if (d > todayKey) return; selectedDate = d; updateSidebarStats(); renderCalendar(); }
-function saveAndRender() { localStorage.setItem("trackerHistory", JSON.stringify(history)); renderCalendar(); updateSidebarStats(); }
-function resetDayData() { if(confirm("Restart for this day?")) { delete history[selectedDate]; saveAndRender(); } }
+.feedback-box { background: #1a1a1a; border-left: 5px solid #d4a373; padding: 25px; margin: 20px 0; width: 100%; max-width: 900px; border-radius: 8px; font-size: 18px; }
+.disclaimer-line { font-size: 12px; color: #444; border-top: 1px solid #222; padding-top: 25px; text-align: center; font-style: italic; margin-top: 20px; }
