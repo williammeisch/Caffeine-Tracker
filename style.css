@@ -1,12 +1,35 @@
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-body { background: #1a1a1a; color: #333; display: flex; justify-content: center; padding: 20px; }
-.container { width: 100%; max-width: 400px; }
-h1 { color: #f3e5d8; text-align: center; margin-bottom: 20px; }
-.card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 3px solid transparent; transition: 0.3s; }
-input, select { padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
-button { width: 100%; padding: 12px; background: #d4a373; border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
-.progress-container { background: #eee; border-radius: 10px; height: 15px; margin-top: 10px; overflow: hidden; }
-#progressBar { height: 100%; width: 0%; transition: 0.5s; background: #4CAF50; }
-#score { font-size: 40px; font-weight: bold; text-align: center; color: #d4a373; }
-.log-container { margin-top: 15px; font-size: 13px; border-top: 1px solid #eee; padding-top: 10px; }
-#caffeineLog li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f9f9f9; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: #121212; color: #fff; height: 100vh; overflow: hidden; display: flex; }
+
+/* SIDEBAR */
+.sidebar { width: 320px; background: #1a1a1a; padding: 25px; border-right: 1px solid #333; display: flex; flex-direction: column; gap: 20px; }
+.card { background: #242424; padding: 20px; border-radius: 12px; }
+input, select { width: 100%; padding: 10px; margin: 8px 0; background: #333; border: 1px solid #444; color: white; border-radius: 5px; }
+button { width: 100%; padding: 12px; background: #d4a373; border: none; font-weight: bold; border-radius: 5px; cursor: pointer; }
+
+/* MAIN CONTENT */
+.main-content { flex: 1; display: flex; flex-direction: column; }
+.calendar-section { flex: 2; padding: 40px; overflow-y: auto; }
+.quote-section { flex: 1; background: #1a1a1a; display: flex; align-items: center; justify-content: center; border-top: 1px solid #333; padding: 20px; }
+
+/* THE GRID */
+.calendar-grid { 
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 15px; 
+    max-width: 900px; 
+}
+.calendar-day { 
+    aspect-ratio: 1/1; 
+    background: #242424; 
+    border-radius: 8px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    color: #121212;
+    transition: 0.3s;
+}
+.day-num { font-size: 12px; position: absolute; top: 5px; left: 8px; opacity: 0.5; color: white; }
+.day-score { font-size: 20px; font-weight: bold; }
+#quoteText { font-style: italic; color: #d4a373; font-size: 24px; text-align: center; }
