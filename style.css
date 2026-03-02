@@ -1,9 +1,8 @@
-/* Professional Reset */
 * { 
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+    font-family: 'Inter', -apple-system, sans-serif; 
 }
 
 body { 
@@ -14,7 +13,7 @@ body {
     overflow: hidden; 
 }
 
-/* SIDEBAR LAYOUT */
+/* SIDEBAR */
 .sidebar { 
     width: 320px; 
     background: #141414; 
@@ -38,7 +37,6 @@ h1 {
     color: #d4a373; 
     text-align: center; 
     margin-bottom: 5px; 
-    letter-spacing: 0.5px;
 }
 
 #editingDateLabel { 
@@ -49,7 +47,6 @@ h1 {
     display: block; 
     text-transform: uppercase; 
     font-weight: bold;
-    opacity: 0.8;
 }
 
 h2 { 
@@ -57,10 +54,8 @@ h2 {
     color: #666; 
     text-transform: uppercase; 
     margin-bottom: 8px; 
-    letter-spacing: 1px; 
 }
 
-/* Inputs & UI Elements */
 input, select { 
     width: 100%; 
     padding: 10px; 
@@ -69,12 +64,6 @@ input, select {
     border: 1px solid #333; 
     color: white; 
     border-radius: 6px; 
-    font-size: 14px; 
-    outline: none; 
-}
-
-input:focus { 
-    border-color: #d4a373; 
 }
 
 button { 
@@ -85,12 +74,7 @@ button {
     font-weight: bold; 
     border-radius: 6px; 
     cursor: pointer; 
-    transition: background 0.2s; 
     color: #141414;
-}
-
-button:hover { 
-    background: #b5835a; 
 }
 
 .reset-btn { 
@@ -99,14 +83,9 @@ button:hover {
     font-size: 11px; 
     margin-top: auto; 
     padding: 10px; 
-    border: 1px solid #333;
 }
 
-.reset-btn:hover {
-    background: #2d1a1a;
-}
-
-/* MAIN CONTENT AREA */
+/* MAIN CONTENT */
 .main-content { 
     flex: 1; 
     display: flex; 
@@ -118,21 +97,19 @@ button:hover {
     padding: 30px; 
 }
 
-/* Navigation Arrows */
 .calendar-nav { 
     display: flex; 
     align-items: center; 
     justify-content: space-between; 
     margin-bottom: 25px; 
-    max-width: 350px; 
+    max-width: 400px; 
 }
 
 .calendar-nav h2 { 
     font-size: 24px; 
     color: #fff; 
     margin: 0; 
-    text-transform: none;
-    letter-spacing: 0;
+    text-transform: none; 
 }
 
 .nav-arrow { 
@@ -145,11 +122,6 @@ button:hover {
     border-radius: 6px;
 }
 
-.nav-arrow:hover { 
-    background: #1a1a1a; 
-}
-
-/* Calendar Grid */
 .weekday-header { 
     display: grid; 
     grid-template-columns: repeat(7, 1fr); 
@@ -177,11 +149,6 @@ button:hover {
     position: relative; 
     border: 1px solid #222; 
     cursor: pointer; 
-    transition: transform 0.1s;
-}
-
-.calendar-day:active {
-    transform: scale(0.95);
 }
 
 .calendar-day.selected { 
@@ -191,6 +158,12 @@ button:hover {
 .calendar-day.future { 
     opacity: 0.15; 
     cursor: default; 
+}
+
+.calendar-day.empty {
+    border: none;
+    background: transparent;
+    cursor: default;
 }
 
 .day-num { 
@@ -207,12 +180,8 @@ button:hover {
     color: #000; 
 }
 
-/* INFO & DISCLAIMER FOOTER */
 .info-footer { 
-    display: grid; 
-    grid-template-columns: 1fr; 
-    gap: 20px; 
-    padding: 0 30px 20px 30px; 
+    padding: 30px; 
     margin-top: auto; 
 }
 
@@ -241,5 +210,4 @@ button:hover {
     color: #333; 
     text-align: center; 
     padding: 0 30px 20px; 
-    line-height: 1.4; 
 }
