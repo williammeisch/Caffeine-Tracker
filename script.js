@@ -71,17 +71,27 @@ function submitDailyProfile() {
     let hrs = parseFloat(document.getElementById('sleepInput').value) || 0;
     let qual = parseFloat(document.getElementById('sleepQuality').value) || 1.0;
     let strain = parseFloat(document.getElementById('exerciseSelect').value) || 0;
+    
     if (!history[selectedDate]) history[selectedDate] = { caffeineItems: [], sleep: 0, score: null, quality: 1.0, strain: 0 };
     let day = history[selectedDate];
     day.sleep = hrs; day.quality = qual; day.strain = strain;
     
     let totalMg = (day.caffeineItems || []).reduce((s, i) => s + i.mg, 0);
+    
+    // --- THE CALIBRATED FORMULA ---
     let score = 100;
+
+    // 1. Caffeine Penalty: -1 point for every 5mg over 200mg
     if (totalMg > 200) score -= (totalMg - 200) * 0.2;
+
+    // 2. Sleep Penalty: -10 points for every hour under 7 (adjusted for quality)
     let effectiveSleep = day.sleep * day.quality;
     if (effectiveSleep < 7) score -= (7 - effectiveSleep) * 10;
+
+    // 3. Exercise Penalty: Subtraction based on the HTML value selected
     score -= day.strain;
     
+    // FINAL CHECK: Keep it between 0 and 100
     day.score = Math.max(0, Math.min(100, Math.round(score)));
     saveAndRender();
 }
