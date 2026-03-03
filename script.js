@@ -91,7 +91,13 @@ function updateSidebarStats() {
     const totalMg = (day.caffeineItems || []).reduce((s, i) => s + i.mg, 0);
     document.getElementById('totalCaffeine').textContent = totalMg;
     document.getElementById('sideScore').textContent = day.score !== null ? day.score + "%" : "--";
-    document.getElementById('caffeineLogList').innerHTML = (day.caffeineItems || []).map(i => `<div class="log-item"><span>${i.name} (${i.mg}mg)</span><button onclick="deleteCaffeine(${i.id})">✕</button></div>`).join('');
+    // FIX: Using a neat minus sign instead of the big X
+    document.getElementById('caffeineLogList').innerHTML = (day.caffeineItems || []).map(i => `
+        <div class="log-item">
+            <span>${i.name} (${i.mg}mg)</span>
+            <button onclick="deleteCaffeine(${i.id})" title="Delete entry">&mdash;</button>
+        </div>
+    `).join('');
     
     const fb = document.getElementById('dailyFeedback');
     if (day.score !== null) {
