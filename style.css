@@ -10,6 +10,12 @@ h2 { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 10p
 input, select { width: 100%; padding: 12px; margin: 5px 0; background: #2a2a2a; border: 1px solid #333; color: white; border-radius: 8px; font-size: 15px; }
 button { width: 100%; padding: 14px; background: #d4a373; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #141414; }
 
+/* LOG ITEM FIX */
+.log-item { display: flex; justify-content: space-between; align-items: center; background: #d4a373; color: #141414; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px; font-weight: 500; }
+/* Clean neat minus button */
+.log-item button { width: auto; padding: 0 5px; height: 20px; background: transparent; color: #141414; font-size: 18px; font-weight: bold; line-height: 1; margin: 0; }
+.log-item button:hover { opacity: 0.7; }
+
 /* RED RESET BUTTON */
 .reset-btn { background: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: auto; padding: 10px; font-size: 12px; }
 .reset-btn:hover { background: #ff6b6b; color: #fff; }
@@ -22,7 +28,6 @@ button { width: 100%; padding: 14px; background: #d4a373; border: none; font-wei
 .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: #0b0b0b; align-items: center; }
 .calendar-section { padding: 40px 20px; width: 100%; max-width: 900px; }
 
-/* FIXED ARROWS & HEADER */
 .calendar-nav { display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 30px; }
 .calendar-nav h2 { font-size: 32px; color: #fff; text-transform: none; margin: 0; }
 .calendar-nav button { width: 40px; height: 40px; padding: 0; background: #222; color: #fff; border: 1px solid #333; font-size: 18px; border-radius: 50%; }
@@ -36,8 +41,10 @@ button { width: 100%; padding: 14px; background: #d4a373; border: none; font-wei
 .feedback-box { background: #1a1a1a; border-left: 5px solid #d4a373; padding: 25px; margin: 20px 0; width: 100%; max-width: 900px; border-radius: 8px; font-size: 18px; }
 
 /* RECOVERY LOGIC FOOTER */
-.info-footer { padding: 40px 20px; width: 100%; border-top: 1px solid #222; margin-top: 20px; }
+.info-footer { padding: 40px 20px; width: 100%; margin-top: auto; }
 .info-card { background: #141414; padding: 30px; border-radius: 16px; max-width: 900px; margin: 0 auto; border: 1px solid #222; }
 .info-card h3 { color: #d4a373; margin-bottom: 15px; }
 .info-card p { font-size: 14px; color: #888; line-height: 1.6; }
-.disclaimer-line { font-size: 12px; color: #444; border-top: 1px solid #222; padding-top: 20px; text-align: center; font-style: italic; margin-top: 20px; }
+
+/* SEPARATED DISCLAIMER LINE */
+.disclaimer-line { font-size: 12px; color: #444; padding-top: 30px; text-align: center; font-style: italic; width: 100%; max-width: 900px; margin: 0 auto; }
